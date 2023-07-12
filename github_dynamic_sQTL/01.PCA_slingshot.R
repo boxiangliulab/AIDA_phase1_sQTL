@@ -1,7 +1,7 @@
 #   ____________________________________________________________________________
 #   Script information                                                      ####
 
-# title: Run PCA and Slingshot on B cells 
+# title: Run PCA and Slingshot on subset B cells 
 # author: Yihan Tong
 # date: 2023-01-09
 # description: None
@@ -12,7 +12,7 @@
 # conda activate r-4.2.3
 
 #   ____________________________________________________________________________
-#   Get option                             ####
+#   Get option     ####
 
 library(getopt)
 command=matrix(c("file","i",1,"character",
