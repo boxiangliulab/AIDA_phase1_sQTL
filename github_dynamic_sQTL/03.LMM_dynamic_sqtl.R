@@ -1,7 +1,7 @@
 #   ____________________________________________________________________________
 #   Script information                                                      ####
 
-# title: Run PCA and Slingshot on B cells 
+# title: Find dynamic sQTLs
 # author: Yihan Tong
 # date: 2023-01-09
 # description: None
