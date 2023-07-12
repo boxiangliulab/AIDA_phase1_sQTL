@@ -1,9 +1,9 @@
 #   ____________________________________________________________________________
 #   Script information                                                      ####
 
-# title: Run PCA and Slingshot on B cells 
+# title: Extract dynamic intron junctions across B cell quantiles by ANOVA test
 # author: Yihan Tong
-# date: 2023-01-09
+# date: 2023-02-09
 # description: None
 
 #   ____________________________________________________________________________
