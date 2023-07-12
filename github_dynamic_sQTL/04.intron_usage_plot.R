@@ -1,7 +1,7 @@
 #   ____________________________________________________________________________
 #   Script information                                                      ####
 
-# title: Run PCA and Slingshot on B cells 
+# title: Plot intron usage result
 # author: Yihan Tong
 # date: 2023-01-09
 # description: None
@@ -51,7 +51,7 @@ rownames(perind_test_extr)<-NULL
 perind_test_extr2<-melt(perind_test_extr,id.vars="chrom")
 
 perind_test_extr2<-dplyr::filter(perind_test_extr2,value!="0/0")
-#分数转化成小数#
+#fraction to decimal#
 perind_test_extr2$ratio <- sapply(strsplit(perind_test_extr2$value, "/"), function(x) as.numeric(x[1])/as.numeric(x[2]))
 
 #add quantile info#
