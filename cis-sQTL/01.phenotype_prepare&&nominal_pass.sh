@@ -1,3 +1,4 @@
+### Prepare phenotype file of RNA splicing information
 for bamfiles in `ls /ebs1/zhangyuntian/project/aida/bamfiles/*.bam`;do
        regtools junctions extract -a 8 -m 50 -M 500000 -s FR $bamfiles -o ${bamfiles}.junc
        echo ${bamfiles}.junc >> test_juncfiles.txt
