@@ -56,3 +56,16 @@ ggplot(frequency,aes(x=Position,y=`Number of sQTL`))+geom_bar(stat="identity") +
 ##putatively causal variants associated with RNA splicing.
 
 python infer_causal_variants.py --output_prefix results eQTL_statistics.txt.gz eQTL_annotations.bed.gz
+
+##plot sQTL & eQTL feature contributions
+library(readxl)
+mydata<-read_xlsx("C:/users/90410/desktop/aida/snpeff_errorbar.xlsx")
+mydata$annotation<-factor(mydata$annotation,levels=c("upstream","5' UTR","3' UTR","downstream","synonymous","missense","splice region"))
+library(ggplot2)
+p<-ggplot(mydata, aes(x=annotation, y=weight,color=type)) + 
+  geom_line() +
+  geom_pointrange(aes(ymin=weight-sse, ymax=weight+sse),size=0.7,position = position_dodge(width=0.3))+
+  xlab("annotation")+theme_classic()+
+  theme(title=element_text(size=8),axis.text = element_text(size = 12),axis.title = element_text(size = 14),
+        axis.text.x=element_text(angle=40,hjust=1,vjust=1),legend.position="none")+
+  geom_hline(aes(yintercept=0),colour="#BEBEBE", linetype="dashed")+xlab(NULL)
