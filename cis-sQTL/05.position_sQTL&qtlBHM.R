@@ -44,7 +44,15 @@ for(i in 1:10){
   frequency[50+i,2]<-paste(i," internal",sep="")
 }
 colnames(frequency)<-c("Number of sQTL","Position")
+
 frequency$Position<-factor(frequency$Position, levels=frequency$Position)
 ggplot(frequency,aes(x=Position,y=`Number of sQTL`))+geom_bar(stat="identity") + theme_classic()+
   theme(title=element_text(size=10),axis.text = element_text(size = 10),axis.title = element_text(size = 10),
         legend.text = element_text(size = 7),legend.title = element_text(size = 7),axis.text.x=element_blank(),axis.ticks.x=element_blank())
+
+
+##qtlBHM
+##This script was used to generate Figure3C and use qtlBHM algorithm (https://github.com/rajanil/qtlBHM) to identify functional elements underlying 
+##putatively causal variants associated with RNA splicing.
+
+python infer_causal_variants.py --output_prefix results eQTL_statistics.txt.gz eQTL_annotations.bed.gz
