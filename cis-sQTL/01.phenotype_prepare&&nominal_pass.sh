@@ -1,3 +1,9 @@
+for bamfiles in `ls /ebs1/zhangyuntian/project/aida/bamfiles/*.bam`;do
+       regtools junctions extract -a 8 -m 50 -M 500000 -s FR $bamfiles -o ${bamfiles}.junc
+       echo ${bamfiles}.junc >> test_juncfiles.txt
+#done
+python /ebs1/zhangyuntian/software/leafcutter/clustering/leafcutter_cluster_regtools.py -j test_juncfiles.txt -m 50 -o aida -l 500000
+
 dir=("CD14+_Monocyte" "CD16+_Monocyte" "CD16+_NK" "CD4+_T_cm" "CD4+_T_cyt" "CD4+_T_em" "CD4+_T_naive" \
                  "CD56+_NK" "CD8+_T_GZMB+" "CD8+_T_GZMK+" "CD8+_T_naive" "IGHMhi_memory_B" "IGHMlo_memory_B" "MAIT" "Treg" \
                 "cDC2" "gdT_GZMK+" "gdT_GZMK-" "naive_B")
