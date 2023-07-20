@@ -75,3 +75,33 @@ for i in ${trait[@]};do
                 --print-coefficients
         done
 done
+
+###barplot (R)
+library(ggplot2)
+newdat<-read.table("C:/users/90410/desktop/aida/supple_file/table/enrichment_1e-4_all_GWAS.txt",sep="\t",header=TRUE,row.names = 1)
+rownames(newdat)<-c("Asthma","RA","BAS","BMI","EOS","GD","Hb","Height","Ht","LYM","MCH","MCHC","MCV","MON","NEU","PLT","RBC","WBC","AD","SLE")
+for(i in 1:20){
+  newdat[i,20]<-max(as.numeric(newdat[i,1:19]))
+}
+newdat<-newdat[order(newdat$V20),]
+##rearrange newdat
+celltype_num<-19
+newdata<-as.data.frame(matrix(NA,20*celltype_num,3))
+for(i in 1:20){
+  for(j in 1:celltype_num){
+    newdata[celltype_num*i+j-celltype_num,1]<-rownames(newdat)[i]
+    newdata[celltype_num*i+j-celltype_num,2]<-celltype_random[j]
+    newdata[celltype_num*i+j-celltype_num,3]<-newdat[i,j]
+  }
+}
+color=c("#fee090","#fdae61", "#bf812d",
+        "#9e9ac8","#6a51a3","#807dba",
+        "#bcbddc","#8c510a","#3690c0","#74a9cf",
+        "#a6bddb", "#a1d99b","#74c476",
+        "#0570b0","#CCCC4D","#f46d43",
+        "#f768a1", "#dd3497","#c7e9c0")
+colnames(newdata)<-c("trait","cell_type","enrichment")
+newdata$cell_type<-factor(newdata$cell_type,levels=celltype_random)
+newdata$trait<-factor(newdata$trait,levels=rownames(newdat))
+ggplot(newdata,aes(x=trait,y=enrichment,fill=cell_type))+geom_bar(position="dodge",stat="identity")+
+  scale_fill_manual(values=color)+theme_classic()+coord_flip()+guides(fill=FALSE)
