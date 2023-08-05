@@ -117,3 +117,6 @@ bar_plot$Number.of.cell.types<-factor(bar_plot$Number.of.cell.types,levels=c(1:1
 ggplot(bar_plot,aes(x=Number.of.cell.types,y=Fraction,fill=type))+
   geom_bar(stat="identity",position="dodge",width=0.8,color="black")+
   xlab("Number of cell types")+ylab("Fraction")+theme_classic()+theme(legend.title=element_blank(),legend.position = "top")
+
+
+## 1 cell type specific: 181/(6732-4132)=6.96%  19 cell type specific: 632/(6732-4132)=24.31%
