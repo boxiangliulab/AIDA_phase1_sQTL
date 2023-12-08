@@ -179,13 +179,16 @@ if(nrow(loci)>0){
                 input<-merge(snp_1mb,MAF,by="variant_id")
                 input<-merge(input,GWAS_pre,by="variant_id",suffixes=c("_sqtl","_gwas"))
                 input<-input[order(input$pval_nominal_gwas),]
-                se<-input$se_gwas[1]
                 test_rs[j,11]<-input$variant_id[1]
                 test_rs[j,12]<-input$pval_nominal_gwas[1]
-                input$varbeta<-(input$se)^2
+                input$varbeta<-var(input$beta)
                 if(nrow(input)>10){
+                ###if GWAS quant type
                 result <- coloc.abf(dataset1=list(pvalues=input$pval_nominal_gwas, type="quant", beta=input$beta_gwas,varbeta=input$varbeta, N=sample_num,snp = input$variant_id),
-                          dataset2=list(pvalues=input$pval_nominal_sqtl, type="quant", N=500,snp=input$variant_id), MAF=input$maf)
+                          dataset2=list(pvalues=input$pval_nominal_sqtl, N=sample_used,snp=input$variant_id), MAF=input$maf)
+                ###if GWAS case-control type
+                result <- coloc.abf(dataset1=list(pvalues=input$pval_nominal_gwas, type="cc", beta=input$beta_gwas,varbeta=input$varbeta, s=proportion_case,snp = input$variant_id),
+                          dataset2=list(pvalues=input$pval_nominal_sqtl, N=sample_used,snp=input$variant_id), MAF=input$maf)
                 test_rs[j,4:9]<-t(as.data.frame(result$summary))[1,1:6]}
         }
         test_rs<-na.omit(test_rs)
