@@ -142,10 +142,45 @@ args<-(commandArgs(TRUE))
 file_name<-args[1]
 celltype<-args[2]
 print(file_name)
+
+cc_trait<-c("GBMI_Cell_Genomics_2022_Curated_sumstats_Asthma.txt.gz",
+            "Ishigaki_NatGenet_2022_Curated_sumstats_RA_EAS.txt.gz",
+            "Sakaue_Nat_Gen_2021_Curated_sumstats_GD.txt.gz",
+            "Shirai_ARD_2022_Curated_sumstats_AD.txt.gz",
+            "Wang_NatCommu_2021_Curated_sumstats_SLE.txt.gz")
+cc_trait_case<-c(18549,11025,2809,2472,11283)
+cc_trait_control<-c(322655,162608,172656,142192,24086)
+
+quant_trait<-c("Sakaue_Nat_Gen_2021_Curated_sumstats_BAS.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_BMI.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_EOS.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_Hb.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_Height.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_Ht.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_LYM.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_MCH.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_MCHC.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_MCV.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_MON.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_NEU.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_PLT.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_RBC.txt.gz",
+"Sakaue_Nat_Gen_2021_Curated_sumstats_WBC.txt.gz")
+quant_trait_num<-c(91908,163835,93063,152447,165056,152447,95717,128028,135482,129832,95119,82810,148623,153512,154355)
+
+cell_type<-c("CD14+_Monocyte", "CD16+_Monocyte", "CD16+_NK", "CD4+_T_cm", "CD4+_T_cyt", "CD4+_T_em", "CD4+_T_naive",
+                 "CD56+_NK", "CD8+_T_GZMB+", "CD8+_T_GZMK+", "CD8+_T_naive", "IGHMhi_memory_B", "IGHMlo_memory_B", "MAIT", "Treg",
+                "cDC2", "gdT_GZMK+", "gdT_GZMK-", "naive_B")
+celltype_sample<-c(458,456,459,459,297,454,458,188,451,455,451,355,435,376,428,408,368,153,425)
+
+num_1<-which(cc_trait==file_name)
+num_2<-which(quant_trait==file_name)
+if(length(num_1)>0)trait_type<-"cc"
+if(length(num_2)>0)trait_type<-"quant"
+num_3<-which(cell_type==celltype)
 library("coloc")
 library(dplyr)
 library(data.table)
-
 ###read in GWAS dataset
 GWAS_data<-paste("/ebs1/shared/data/aida/analysis/AIDA_GWAS_sumstats/",file_name,sep="")
 print("start read in")
@@ -155,7 +190,7 @@ GWAS_pre<-as.data.frame(GWAS_pre)
 GWAS_pre<-GWAS_pre[,2:5]
 colnames(GWAS_pre)<-c("variant_id","beta","se","pval_nominal")
 ###read in intron need to be dealed
-intron_pos<-paste("/ebs1/zhangyuntian/sQTL_result/colocalization/test/inter_loci/intron_each_gwas/",celltype,"_",file_name,".loci",sep="")
+intron_pos<-paste("/ebs1/zhangyuntian/sQTL_result/colocalization_12_8/inter_loci/intron_each_gwas/",celltype,"_",file_name,".loci",sep="")
 loci<-read.table(intron_pos,sep="\t")
 ###coloc
 MAF<-read.table("/ebs1/zhangyuntian/project/aida/genotype/replication/total_MAF.txt",header=TRUE)
@@ -165,7 +200,7 @@ if(nrow(loci)>0){
         test_rs<-as.data.frame(matrix(NA,nrow(loci),12))
         colnames(test_rs)<-c("variant_id","intron_id","gene","nsnps","PP.H0.abf","PP.H1.abf","PP.H2.abf","PP.H3.abf","PP.H4.abf","sQTL_pval","gwas_id","gwas_pval")
         for(j in 1:nrow(loci)){
-                snp_1mb<-fread(paste("/ebs1/zhangyuntian/sQTL_result/colocalization/test/inter_loci/",celltype,"_nominal_snp/",loci[j,1],".txt",sep=""),sep="\t",header=FALSE)
+                snp_1mb<-fread(paste("/ebs1/zhangyuntian/sQTL_result/colocalization_12_8/inter_loci/",celltype,"_nominal_snp/",loci[j,1],".txt",sep=""),sep="\t",header=FALSE)
                 colnames(snp_1mb)<-c("gene","intron","variant_id","pval_nominal","beta")
                 snp_1mb<-as.data.frame(snp_1mb)
                 snp_1mb<-snp_1mb[order(snp_1mb$pval_nominal),]
@@ -184,15 +219,19 @@ if(nrow(loci)>0){
                 test_rs[j,12]<-input$pval_nominal_gwas[1]
                 input$varbeta<-(input$se)^2
                 if(nrow(input)>10){
-                result <- coloc.abf(dataset1=list(pvalues=input$pval_nominal_gwas, type="quant", beta=input$beta_gwas,varbeta=input$varbeta, N=sample_num,snp = input$variant_id),
-                          dataset2=list(pvalues=input$pval_nominal_sqtl, type="quant", N=500,snp=input$variant_id), MAF=input$maf)
-                test_rs[j,4:9]<-t(as.data.frame(result$summary))[1,1:6]}
+                        if(trait_type=="cc"){
+                                result <- coloc.abf(dataset1=list(pvalues=input$pval_nominal_gwas, type="cc", beta=input$beta_gwas,varbeta=input$varbeta,
+                                                                  s=cc_trait_case[num_1]/(cc_trait_case[num_1]+cc_trait_control[num_1]),
+                                                                  N=quant_trait_num[num_1],snp = input$variant_id),
+                                                    dataset2=list(pvalues=input$pval_nominal_sqtl, type="quant", N=celltype_sample[num_3],snp=input$variant_id), MAF=input$maf)
+                                test_rs[j,4:9]<-t(as.data.frame(result$summary))[1,1:6]
+                        }
+                        if(trait_type=="quant"){
+                                result <- coloc.abf(dataset1=list(pvalues=input$pval_nominal_gwas, type="quant", beta=input$beta_gwas,varbeta=input$varbeta, N=quant_trait_num[num_2],snp = input$variant_id),
+                          dataset2=list(pvalues=input$pval_nominal_sqtl, type="quant", N=celltype_sample[num_3],snp=input$variant_id), MAF=input$maf)
+                                test_rs[j,4:9]<-t(as.data.frame(result$summary))[1,1:6]}}
         }
-        test_rs<-na.omit(test_rs)
-        if(nrow(test_rs)>0){
-        for(j in 1:nrow(test_rs)){
-          if(test_rs[j,9]<=0.75){test_rs[j,1]<-NA}
-        }}
-        test_rs<-na.omit(test_rs)
-  if(nrow(test_rs)>0){write.table(test_rs,paste("coloc_",celltype,file_name,".txt",sep=""),sep="\t",quote=FALSE,row.names=FALSE,col.names=FALSE)}
+  if(nrow(test_rs)>0){write.table(test_rs,paste("result/coloc_",celltype,file_name,".txt",sep=""),sep="\t",quote=FALSE,row.names=FALSE,col.names=FALSE)}
 }
+
+

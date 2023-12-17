@@ -11,7 +11,7 @@
 
 # conda activate r-4.2.3
 
-#' this script is for plot significant chnage of introns usages
+#' this script is for plot significant change of introns usages
 #' input: Bcell_quantile_only_pc_and_lncRNA_perind.counts + all_sample_ANOVA_value.csv
 
 library(dplyr)
