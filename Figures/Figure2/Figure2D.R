@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(ggpubr)
 
-source('data/color_palette.R')
+source('src/color_palette.R')
 clu2gene <- read.delim('data/aida_clu_gene.txt')
 celltypes <- read.table('data/cell_type_use.txt')$V1
 

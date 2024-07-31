@@ -89,7 +89,7 @@ label_dict<-list("CD14\\+_Monocyte"="CD14+ Monocyte",
 comps_use <- c('Chinese_vs_Indian', 'Chinese_vs_Malay', 'Indian_vs_Malay')
 dat.sig <- subset(DSGs, country %in% comps_use & celltype != 'CD4+_T')
 dat.sig$chr <- gsub('(.*):.*', '\\1', dat.sig$cluster)
-source('data/color_palette.R')
+source('src/color_palette.R')
 for (i in seq_along(label_dict)) {
   dat.sig$celltype <- gsub(paste0("^",names(label_dict)[i],"$"),label_dict[[i]],dat.sig$celltype)
   names(celltype_pal) <- gsub(paste0("^",names(label_dict)[i],"$"),label_dict[[i]],names(celltype_pal))

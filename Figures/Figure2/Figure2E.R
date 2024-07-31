@@ -32,7 +32,7 @@ for (ct in celltypes.use) {
   df <- rbind(df, dat.melt)
 }
 
-source('data/cell_type_pretty_names.R')
+source('src/cell_type_pretty_names.R')
 names(label_dict)[which(names(label_dict) == 'naive_B')] <- 'Naive_B'
 rank.subset <- subset(rank, celltype %in% celltypes.use)
 for (i in seq_along(label_dict)) {
