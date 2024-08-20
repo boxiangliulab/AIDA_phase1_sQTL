@@ -86,7 +86,7 @@ p <- ggplot(gene, aes(xmin = start, xmax = end, y = transcript, fill = exonn, co
     data = features,
     aes(x = position, y = transcript, forward = forward)
   ) +
-  xlab("chr12") +
+  xlab("chrX") +
   ylab(NULL) +
   theme(legend.position = "none") +
   xlim(start.plot, end.plot)
